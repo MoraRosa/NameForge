@@ -1,0 +1,2638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NameForge — by MoraRosa</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Fragment+Mono&display=swap" rel="stylesheet">
+<style>
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── TOKENS ── */
+:root {
+  --bg:        #fafaf7;
+  --bg2:       #f3f0e8;
+  --ink:       #111111;
+  --ink2:      #555550;
+  --ink3:      #999990;
+  --rule:      #e2dfd6;
+  --amber:     #c97a0a;
+  --amber-lt:  #fef3e2;
+  --amber-dk:  #92570a;
+  --green:     #167a52;
+  --green-lt:  #e6f5ef;
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --max-w:     540px;
+}
+
+/* ── BASE ── */
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── LAYOUT ── */
+.page {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ── HEADER ── */
+header {
+  border-bottom: 1px solid var(--rule);
+  background: rgba(250,250,247,0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.logo em {
+  font-style: italic;
+  color: var(--amber);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pill {
+  font-family: 'Fragment Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 20px;
+  border: 1px solid var(--rule);
+  color: var(--ink3);
+  background: var(--bg);
+  white-space: nowrap;
+}
+
+.pill-amber {
+  border-color: rgba(201,122,10,0.3);
+  color: var(--amber);
+  background: var(--amber-lt);
+  animation: soft-pulse 3s ease-in-out infinite;
+}
+
+@keyframes soft-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* ── HERO ── */
+.hero {
+  padding: 52px 0 40px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.hero-kicker {
+  font-family: 'Fragment Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hero-kicker::before {
+  content: '';
+  display: block;
+  width: 20px;
+  height: 1px;
+  background: var(--amber);
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(38px, 9vw, 58px);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  margin-bottom: 18px;
+  color: var(--ink);
+}
+
+h1 em {
+  font-style: italic;
+  color: var(--amber);
+}
+
+.hero-desc {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--ink2);
+  max-width: 420px;
+}
+
+.hero-desc strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* ── DIVIDER ── */
+.divider {
+  height: 1px;
+  background: var(--rule);
+  margin: 0;
+}
+
+/* ── FORM SECTION ── */
+.form-section {
+  padding: 32px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.field-group {
+  margin-bottom: 24px;
+}
+
+.field-label {
+  font-family: 'Fragment Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  font-size: 9px;
+  color: var(--ink3);
+  flex-shrink: 0;
+}
+
+textarea {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  line-height: 1.65;
+  padding: 12px 14px;
+  resize: none;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  min-height: 90px;
+}
+
+textarea::placeholder { color: var(--ink3); }
+
+textarea:focus {
+  border-color: var(--amber);
+  box-shadow: 0 0 0 3px rgba(201,122,10,0.08);
+}
+
+/* ── VIBE GRID ── */
+.vibe-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.vibe-btn {
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  color: var(--ink2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  padding: 11px 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.12s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vibe-btn:hover {
+  border-color: var(--ink3);
+  color: var(--ink);
+}
+
+.vibe-btn.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--bg);
+}
+
+.vibe-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* ── GENERATE BUTTON ── */
+.gen-btn {
+  width: 100%;
+  background: var(--ink);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--bg);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding: 15px 20px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background 0.15s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.gen-btn:hover { background: #222; }
+.gen-btn:active { transform: scale(0.99); }
+.gen-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.gen-btn-icon { font-size: 15px; transition: transform 0.3s; }
+.gen-btn:not(:disabled):hover .gen-btn-icon { transform: rotate(15deg); }
+
+/* ── LOADING ── */
+.loading {
+  display: none;
+  padding: 32px 0;
+  text-align: center;
+}
+
+.loading.active { display: block; }
+
+.loading-msg {
+  font-family: 'Fragment Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--ink3);
+  margin-bottom: 16px;
+  min-height: 18px;
+}
+
+.loading-track {
+  width: 100%;
+  height: 1px;
+  background: var(--rule);
+  position: relative;
+  overflow: hidden;
+}
+
+.loading-fill {
+  position: absolute;
+  left: -40%;
+  top: 0;
+  width: 40%;
+  height: 100%;
+  background: var(--amber);
+  animation: track-sweep 1.1s ease-in-out infinite;
+}
+
+@keyframes track-sweep {
+  from { left: -40%; }
+  to   { left: 100%; }
+}
+
+.loading-steps {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 20px;
+}
+
+.step-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--rule);
+  transition: background 0.3s;
+}
+
+.step-dot.done { background: var(--amber); }
+.step-dot.active { background: var(--ink); }
+
+/* ── NAMES OUTPUT ── */
+.names-section {
+  display: none;
+  padding: 32px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.names-section.visible { display: block; }
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.section-hint {
+  font-family: 'Fragment Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink3);
+}
+
+.names-list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--rule);
+  cursor: pointer;
+  transition: background 0.1s;
+  gap: 12px;
+  animation: row-in 0.35s ease both;
+}
+
+@keyframes row-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.name-row:last-child { border-bottom: none; }
+.name-row:hover { background: var(--bg2); }
+
+.name-row.selected {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.name-row.selected + .name-row {
+  border-top-color: var(--ink);
+}
+
+.name-main {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(22px, 5vw, 30px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  transition: color 0.1s;
+  flex: 1;
+}
+
+.name-row.selected .name-main { color: var(--bg); }
+
+.name-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.name-tag {
+  font-family: 'Fragment Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  transition: color 0.1s;
+}
+
+.name-row.selected .name-tag { color: rgba(250,250,247,0.45); }
+
+.name-score {
+  font-family: 'Fragment Mono', monospace;
+  font-size: 10px;
+  color: var(--amber);
+  transition: color 0.1s;
+}
+
+.name-row.selected .name-score { color: rgba(201,122,10,0.8); }
+
+/* ── AI BRAIN ── */
+.brain-section {
+  display: none;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.brain-section.visible { display: block; }
+
+.collapsible-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 0;
+}
+
+.collapsible-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.collapsible-toggle {
+  font-family: 'Fragment Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  border: 1px solid var(--rule);
+  border-radius: 20px;
+  padding: 4px 12px;
+  transition: all 0.15s;
+}
+
+.collapsible-header:hover .collapsible-toggle {
+  border-color: var(--ink3);
+  color: var(--ink);
+}
+
+.collapsible-body {
+  display: none;
+  margin-top: 20px;
+}
+
+.collapsible-body.open { display: block; }
+
+/* LOSS CHART */
+.chart-wrap {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 16px;
+  background: var(--bg);
+}
+
+.chart-label {
+  font-family: 'Fragment Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 10px;
+}
+
+canvas {
+  width: 100%;
+  height: 90px;
+  display: block;
+}
+
+/* PROB BARS */
+.prob-section {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 16px;
+  background: var(--bg);
+}
+
+.prob-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.prob-row:last-child { margin-bottom: 0; }
+
+.prob-char {
+  font-family: 'Fragment Mono', monospace;
+  font-size: 11px;
+  color: var(--ink2);
+  width: 14px;
+  flex-shrink: 0;
+}
+
+.prob-track {
+  flex: 1;
+  height: 6px;
+  background: var(--rule);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.prob-fill {
+  height: 100%;
+  background: var(--amber);
+  border-radius: 3px;
+  transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.prob-pct {
+  font-family: 'Fragment Mono', monospace;
+  font-size: 9px;
+  color: var(--ink3);
+  width: 34px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ATTENTION */
+.attn-section {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 16px;
+  background: var(--bg);
+  overflow: hidden;
+}
+
+.attn-grid {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+
+.attn-cell {
+  width: 26px;
+  height: 26px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Fragment Mono', monospace;
+  font-size: 7px;
+  color: rgba(0,0,0,0.5);
+  transition: background 0.4s;
+}
+
+/* EXPLAINERS */
+.explainers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.explainer {
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  padding: 14px;
+}
+
+.exp-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.exp-body {
+  font-size: 11px;
+  line-height: 1.65;
+  color: var(--ink2);
+}
+
+/* ── SELECTED PANEL ── */
+.selected-section {
+  display: none;
+  padding: 32px 0 40px;
+}
+
+.selected-section.visible { display: block; }
+
+.selected-panel {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.selected-top {
+  background: var(--bg2);
+  padding: 28px 24px;
+  border-bottom: 1px solid var(--rule);
+  text-align: center;
+}
+
+.selected-name {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(42px, 11vw, 62px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.selected-name em {
+  font-style: italic;
+  color: var(--amber);
+}
+
+.selected-meta {
+  font-family: 'Fragment Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--ink3);
+  text-transform: uppercase;
+}
+
+.selected-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+.action-btn {
+  background: var(--bg);
+  border: none;
+  border-right: 1px solid var(--rule);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 13px 16px;
+  cursor: pointer;
+  transition: background 0.12s;
+  letter-spacing: 0.01em;
+  text-align: center;
+}
+
+.action-btn:last-child { border-right: none; }
+.action-btn:hover { background: var(--bg2); }
+.action-btn.copied { background: var(--green-lt); color: var(--green); }
+
+.regen-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  color: var(--ink2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  padding: 12px 16px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.12s;
+  letter-spacing: 0.01em;
+}
+
+.regen-btn:hover {
+  border-color: var(--ink3);
+  color: var(--ink);
+  background: var(--bg2);
+}
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--rule);
+  padding: 24px 20px 36px;
+}
+
+.footer-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.footer-text {
+  font-family: 'Fragment Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--ink3);
+  line-height: 1.8;
+  text-transform: uppercase;
+}
+
+.footer-text a {
+  color: var(--amber-dk);
+  text-decoration: none;
+}
+
+.footer-text a:hover { text-decoration: underline; }
+
+/* ── DOMAIN CHECKER ── */
+.domain-checker {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.domain-checker-header {
+  padding: 11px 16px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.domain-checker-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.domain-powered {
+  font-family: "Fragment Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink3);
+}
+
+.domain-tlds {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.domain-placeholder {
+  font-size: 12px;
+  color: var(--ink3);
+  text-align: center;
+  padding: 8px 0;
+  font-family: "Fragment Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.domain-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--rule);
+  animation: row-in 0.3s ease both;
+}
+
+.domain-row:last-child { border-bottom: none; }
+
+.domain-name-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+  min-width: 0;
+}
+
+.domain-name {
+  font-family: "Fragment Mono", monospace;
+  font-size: 13px;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.domain-tld-label {
+  font-family: "Fragment Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink3);
+}
+
+.domain-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.domain-badge {
+  font-family: "Fragment Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.domain-badge.checking {
+  background: var(--bg2);
+  color: var(--ink3);
+  border: 1px solid var(--rule);
+  animation: soft-pulse 1.2s ease-in-out infinite;
+}
+
+.domain-badge.available {
+  background: var(--green-lt);
+  color: var(--green);
+  border: 1px solid rgba(22,122,82,0.25);
+}
+
+.domain-badge.taken {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid rgba(185,28,28,0.2);
+}
+
+.domain-badge.unknown {
+  background: var(--bg2);
+  color: var(--ink3);
+  border: 1px solid var(--rule);
+}
+
+.domain-register-btn {
+  font-family: "Fragment Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border: 1px solid var(--rule);
+  border-radius: 20px;
+  color: var(--ink3);
+  background: transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.12s;
+  white-space: nowrap;
+}
+
+.domain-register-btn:hover {
+  border-color: var(--amber);
+  color: var(--amber-dk);
+  background: var(--amber-lt);
+}
+
+/* ── LEARN SECTION ── */
+.learn-section {
+  padding: 40px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.learn-intro {
+  margin-bottom: 36px;
+}
+
+.learn-intro .section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+
+.learn-intro p {
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--ink2);
+  max-width: 460px;
+}
+
+.learn-intro p a {
+  color: var(--amber-dk);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Chapter nav */
+.chapter-nav {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+
+.chapter-tab {
+  font-family: 'Fragment Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 20px;
+  color: var(--ink3);
+  background: var(--bg);
+  cursor: pointer;
+  transition: all 0.12s;
+  white-space: nowrap;
+}
+
+.chapter-tab:hover { border-color: var(--ink3); color: var(--ink); }
+.chapter-tab.active { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+
+/* Chapter panels */
+.chapter-panel { display: none; }
+.chapter-panel.active { display: block; }
+
+/* Concept card */
+.concept-card {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.concept-head {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  background: var(--bg);
+  transition: background 0.12s;
+  gap: 12px;
+}
+
+.concept-head:hover { background: var(--bg2); }
+
+.concept-head-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.concept-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--amber-lt);
+  border: 1px solid rgba(201,122,10,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.concept-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.concept-sub {
+  font-family: 'Fragment Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--ink3);
+  margin-top: 1px;
+  text-transform: uppercase;
+}
+
+.concept-chevron {
+  font-size: 11px;
+  color: var(--ink3);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.concept-card.open .concept-chevron { transform: rotate(180deg); }
+
+.concept-body {
+  display: none;
+  padding: 0 16px 16px;
+  border-top: 1px solid var(--rule);
+  background: var(--bg);
+}
+
+.concept-card.open .concept-body { display: block; }
+
+.concept-body p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--ink2);
+  margin-top: 14px;
+  margin-bottom: 10px;
+}
+
+.concept-body p:last-child { margin-bottom: 0; }
+
+.concept-body strong { color: var(--ink); font-weight: 500; }
+
+.concept-body em { font-style: italic; color: var(--amber-dk); }
+
+/* Analogy callout */
+.analogy {
+  background: var(--amber-lt);
+  border: 1px solid rgba(201,122,10,0.2);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin: 12px 0;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--amber-dk);
+}
+
+.analogy-label {
+  font-family: 'Fragment Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 4px;
+}
+
+/* Code snippet */
+.code-block {
+  background: #1a1a1a;
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin: 12px 0;
+  overflow-x: auto;
+}
+
+.code-block code {
+  font-family: 'Fragment Mono', monospace;
+  font-size: 11px;
+  line-height: 1.7;
+  color: #d4d0c8;
+  white-space: pre;
+  display: block;
+}
+
+.code-block code .cm { color: #888; }
+.code-block code .ck { color: #c97a0a; }
+.code-block code .cs { color: #7ec8a0; }
+.code-block code .cn { color: #8ab4e8; }
+
+/* Diagram */
+.diagram {
+  background: var(--bg2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin: 12px 0;
+  font-family: 'Fragment Mono', monospace;
+  font-size: 10px;
+  line-height: 1.9;
+  color: var(--ink2);
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* Scale comparison */
+.scale-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+  font-size: 12px;
+}
+
+.scale-table th {
+  font-family: 'Fragment Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--rule);
+  background: var(--bg2);
+}
+
+.scale-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink2);
+  vertical-align: top;
+}
+
+.scale-table tr:last-child td { border-bottom: none; }
+.scale-table td:first-child { font-weight: 500; color: var(--ink); }
+.scale-table .highlight { color: var(--amber-dk); font-weight: 500; }
+
+/* Progress path */
+.learn-path {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 8px;
+}
+
+.path-step {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  position: relative;
+}
+
+.path-step::before {
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: 28px;
+  bottom: -12px;
+  width: 1px;
+  background: var(--rule);
+}
+
+.path-step:last-child::before { display: none; }
+
+.path-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Fragment Mono', monospace;
+  font-size: 9px;
+  color: var(--ink3);
+  flex-shrink: 0;
+  margin-top: 2px;
+  background: var(--bg);
+}
+
+.path-step.done .path-num {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: #fff;
+}
+
+.path-content {
+  padding-bottom: 20px;
+}
+
+.path-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+
+.path-desc {
+  font-size: 12px;
+  color: var(--ink3);
+  line-height: 1.6;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--ink3); }
+
+/* ── TRANSITIONS ── */
+.fade-in { animation: fade-in 0.4s ease both; }
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="logo">Name<em>Forge</em></div>
+    <div class="header-right">
+      <span class="pill pill-amber">AI Live</span>
+      <span class="pill">by MoraRosa</span>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="page">
+  <section class="hero">
+    <div class="hero-kicker">AI Name Engine — v1.0</div>
+    <h1>Find your<br><em>brand's name.</em></h1>
+    <p class="hero-desc">
+      A <strong>character-level transformer</strong> trained on 200+ SaaS and startup names.
+      Describe your product, pick a vibe, and watch the model generate names that actually fit —
+      then see <strong>exactly how it decided</strong>.
+    </p>
+  </section>
+
+  <!-- FORM -->
+  <section class="form-section">
+    <div class="field-group">
+      <div class="field-label">
+        <span class="step-num">1</span>
+        Describe your product
+      </div>
+      <textarea
+        id="project-desc"
+        placeholder="e.g. A mobile app that helps dog owners track daily walks, vet appointments, and connect with nearby pet sitters in their neighbourhood…"
+        rows="4"
+      ></textarea>
+    </div>
+
+    <div class="field-group" style="margin-bottom:0">
+      <div class="field-label">
+        <span class="step-num">2</span>
+        Pick a vibe
+      </div>
+      <div class="vibe-grid">
+        <button class="vibe-btn active" data-vibe="bold">
+          <span class="vibe-icon">⚡</span> Bold &amp; Powerful
+        </button>
+        <button class="vibe-btn" data-vibe="clean">
+          <span class="vibe-icon">◻</span> Clean &amp; Modern
+        </button>
+        <button class="vibe-btn" data-vibe="playful">
+          <span class="vibe-icon">✦</span> Playful &amp; Weird
+        </button>
+        <button class="vibe-btn" data-vibe="abstract">
+          <span class="vibe-icon">◈</span> Abstract &amp; Rare
+        </button>
+      </div>
+    </div>
+
+    <button class="gen-btn" id="gen-btn" onclick="generateNames()">
+      <span class="gen-btn-icon">✦</span>
+      Generate Names
+    </button>
+  </section>
+
+  <!-- LOADING -->
+  <div class="loading" id="loading">
+    <div class="loading-msg" id="loading-msg">Initialising model...</div>
+    <div class="loading-track"><div class="loading-fill"></div></div>
+    <div class="loading-steps" id="loading-steps">
+      <div class="step-dot" id="dot-0"></div>
+      <div class="step-dot" id="dot-1"></div>
+      <div class="step-dot" id="dot-2"></div>
+      <div class="step-dot" id="dot-3"></div>
+      <div class="step-dot" id="dot-4"></div>
+      <div class="step-dot" id="dot-5"></div>
+      <div class="step-dot" id="dot-6"></div>
+      <div class="step-dot" id="dot-7"></div>
+    </div>
+  </div>
+
+  <!-- NAMES -->
+  <section class="names-section" id="names-section">
+    <div class="section-header">
+      <div class="section-title">Generated names</div>
+      <div class="section-hint">Tap to select</div>
+    </div>
+    <div class="names-list" id="names-list"></div>
+  </section>
+
+  <!-- AI BRAIN -->
+  <section class="brain-section" id="brain-section">
+    <div class="collapsible-header" onclick="toggleBrain()">
+      <div class="collapsible-title">How the AI made these</div>
+      <div class="collapsible-toggle" id="brain-toggle">Explain →</div>
+    </div>
+    <div class="collapsible-body" id="brain-body">
+
+      <div class="chart-wrap">
+        <div class="chart-label">Training loss — 80 steps on SaaS names</div>
+        <canvas id="loss-canvas" height="90"></canvas>
+      </div>
+
+      <div class="prob-section">
+        <div class="chart-label">Next-character probabilities (last sampling step)</div>
+        <div id="prob-bars"></div>
+      </div>
+
+      <div class="attn-section">
+        <div class="chart-label">Attention heatmap — which characters attend to which</div>
+        <div class="attn-grid" id="attn-grid"></div>
+      </div>
+
+      <div class="explainers">
+        <div class="explainer">
+          <div class="exp-title">🔎 Transformer</div>
+          <div class="exp-body">Each character looks at all previous ones and decides which matter most. That "attention" is the same core idea inside GPT-4 — just 10,000× smaller here.</div>
+        </div>
+        <div class="explainer">
+          <div class="exp-title">📉 Loss curve</div>
+          <div class="exp-body">Loss measures how wrong the model is. It trains on hundreds of real SaaS names, adjusting weights until predictions improve. Lower = better.</div>
+        </div>
+        <div class="explainer">
+          <div class="exp-title">🔤 Character-level</div>
+          <div class="exp-body">This model learns one character at a time — "given S-t-r-i, what probably comes next?" Same math as ChatGPT. Very different scale.</div>
+        </div>
+        <div class="explainer">
+          <div class="exp-title">🌡 Temperature</div>
+          <div class="exp-body">Temperature scales the probability bars before sampling. Low = safe and predictable. High = wild and creative. Your vibe choice adjusts this.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SELECTED + DOMAIN CHECKER -->
+  <section class="selected-section" id="selected-section">
+    <div class="section-header" style="margin-bottom:14px;">
+      <div class="section-title">Your pick</div>
+    </div>
+
+    <div class="selected-panel">
+      <div class="selected-top">
+        <div class="selected-name" id="selected-name-display">—</div>
+        <div class="selected-meta" id="selected-meta">Select a name above</div>
+      </div>
+      <div class="selected-actions">
+        <button class="action-btn" id="copy-btn" onclick="copyName()">Copy name</button>
+        <button class="action-btn" id="domain-btn" onclick="copyDomain()">Copy .com</button>
+      </div>
+    </div>
+
+    <!-- DOMAIN AVAILABILITY CHECKER -->
+    <div class="domain-checker" id="domain-checker">
+      <div class="domain-checker-header">
+        <span class="domain-checker-title">Domain availability</span>
+        <span class="domain-powered">RDAP · free · no API key</span>
+      </div>
+      <div class="domain-tlds" id="domain-tlds">
+        <div class="domain-placeholder">Select a name above to check domains</div>
+      </div>
+    </div>
+
+    <button class="regen-btn" onclick="generateNames()">↺ Generate more names</button>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════
+     LEARN SECTION — How LLMs & Transformers Work
+     ═══════════════════════════════════════ -->
+<div class="page">
+  <section class="learn-section">
+
+    <div class="learn-intro">
+      <div class="section-title">How AI language models work</div>
+      <p>The name generator above runs a real transformer — the same architecture behind ChatGPT, Gemini, and LLaMA, just microscopic by comparison. This section explains exactly what's happening under the hood, from raw text to generated output, no maths degree required. Inspired by <a href="https://gist.github.com/karpathy/8627fe009c40f57531cb18360106ce95" target="_blank">microgpt by @karpathy</a>.</p>
+    </div>
+
+    <!-- Chapter nav -->
+    <div class="chapter-nav">
+      <button class="chapter-tab active" onclick="switchChapter('foundation', this)">Foundation</button>
+      <button class="chapter-tab" onclick="switchChapter('transformer', this)">Transformer</button>
+      <button class="chapter-tab" onclick="switchChapter('training', this)">Training</button>
+      <button class="chapter-tab" onclick="switchChapter('generation', this)">Generation</button>
+      <button class="chapter-tab" onclick="switchChapter('scale', this)">Scale</button>
+    </div>
+
+    <!-- ── CHAPTER 1: FOUNDATION ── -->
+    <div class="chapter-panel active" id="chapter-foundation">
+
+      <div class="concept-card" onclick="toggleConcept(this)">
+        <div class="concept-head">
+          <div class="concept-head-left">
+            <div class="concept-icon">🔤</div>
+            <div>
+              <div class="concept-title">Tokens — how text becomes numbers</div>
+              <div class="concept-sub">Tokenisation · Vocabulary · Encoding</div>
+            </div>
+          </div>
+          <div class="concept-chevron">▼</div>
+        </div>
+        <div class="concept-body">
+          <p>AI models can't read text — they only understand numbers. A <strong>tokeniser</strong> converts every character or word into an integer ID. This app uses <em>character-level tokenisation</em>: each letter gets its own number.</p>
+          <div class="code-block"><code><span class="cm"># The alphabet becomes a lookup table</span>
+<span class="ck">chars</span> = <span class="cs">'abcdefghijklmnopqrstuvwxyz'</span>
+<span class="ck">encode</span>(<span class="cs">'stripe'</span>) → [<span class="cn">18, 19, 17, 8, 15, 4</span>]
+<span class="ck">encode</span>(<span class="cs">'notion'</span>) → [<span class="cn">13, 14, 19, 8, 14, 13</span>]</code></div>
+          <p>GPT-4 uses a smarter tokeniser called <strong>BPE (Byte Pair Encoding)</strong> that merges common character pairs into single tokens — so "ing" or "tion" become one token instead of three. This makes the model faster and lets it handle longer contexts.</p>
+          <div class="analogy">
+            <div class="analogy-label">Analogy</div>
+            Tokenisation is like sheet music for text. Before you can play a song (generate output), every word must be written as notes (numbers) the instrument (model) can actually read.
+          </div>
+          <p>The full set of possible tokens is called the <strong>vocabulary</strong>. This app's vocabulary is 27 tokens (26 letters + a special BOS "beginning of sequence" token). GPT-4's vocabulary is ~100,000 tokens.</p>
+        </div>
+      </div>
+
+      <div class="concept-card" onclick="toggleConcept(this)">
+        <div class="concept-head">
+          <div class="concept-head-left">
+            <div class="concept-icon">📐</div>
+            <div>
+              <div class="concept-title">Embeddings — meaning in space</div>
+              <div class="concept-sub">Vectors · Semantic similarity · Dimensionality</div>
+            </div>
+          </div>
+          <div class="concept-chevron">▼</div>
+        </div>
+        <div class="concept-body">
+          <p>Token IDs are just integers — the number 18 doesn't mean "s is near t". To give tokens <em>meaning</em>, each one is mapped to a <strong>vector</strong> — a list of floating point numbers called an embedding.</p>
+          <div class="diagram">Token "s"  →  ID: 18  →  embedding: [0.12, -0.84, 0.33, 0.07, ...]
+Token "t"  →  ID: 19  →  embedding: [0.14, -0.81, 0.35, 0.09, ...]
+                                      ↑ similar!   ↑ similar!</div>
+          <p>Tokens that appear in similar contexts end up with similar vectors. After training, words like "king" and "queen" sit close together in embedding space. The famous result: <strong>king − man + woman ≈ queen</strong>.</p>
+          <p>This app uses <strong>16-dimensional embeddings</strong>. GPT-3 used 12,288 dimensions. More dimensions = more nuance = more parameters = more compute.</p>
+          <div class="analogy">
+            <div class="analogy-label">Analogy</div>
+            Embeddings are like GPS coordinates for words. Two words that "live near each other" in meaning will have coordinates close together on the map, even if their spellings are completely different.
+          </div>
+        </div>
+      </div>
+
+      <div class="concept-card" onclick="toggleConcept(this)">
+        <div class="concept-head">
+          <div class="concept-head-left">
+            <div class="concept-icon">📍</div>
+            <div>
+              <div class="concept-title">Positional encoding — order matters</div>
+              <div class="concept-sub">Position · Sequence · RoPE · Sinusoidal</div>
+            </div>
+          </div>
+          <div class="concept-chevron">▼</div>
+        </div>
+        <div class="concept-body">
+          <p>A transformer processes all tokens at once (in parallel) — but "cat sat" and "sat cat" mean different things. So we add a <strong>positional encoding</strong> to each token's embedding to signal its position in the sequence.</p>
+          <div class="code-block"><code><span class="cm"># Each position gets its own embedding vector</span>
+<span class="ck">x</span> = token_embedding[tok] + position_embedding[pos]
+<span class="cm"># position 0 = first char, position 1 = second, etc.</span></code></div>
+          <p>This app uses simple <strong>learned positional embeddings</strong> — a table of vectors, one per position, trained alongside everything else. Modern models like LLaMA use <strong>RoPE (Rotary Position Embedding)</strong>, which handles much longer sequences more elegantly.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── CHAPTER 2: TRANSFORMER ── -->
+    <div class="chapter-panel" id="chapter-transformer">
+
+      <div class="concept-card" onclick="toggleConcept(this)">
+        <div class="concept-head">
+          <div class="concept-head-left">
+            <div class="concept-icon">👁</div>
+            <div>
+              <div class="concept-title">Attention — the core mechanism</div>
+              <div class="concept-sub">Query · Key · Value · Softmax · Causal masking</div>
+            </div>
+          </div>
+          <div class="concept-chevron">▼</div>
+        </div>
+        <div class="concept-body">
+          <p>Attention lets every token look at every previous token and decide which ones are most relevant. For each token, three vectors are computed: a <strong>Query</strong> (what am I looking for?), a <strong>Key</strong> (what do I contain?), and a <strong>Value</strong> (what do I contribute?).</p>
+          <div class="diagram">  Q (query): "what context do I need?"
+  K (key):   "what context do I offer?"
+  V (value): "here's my content if selected"
+
+  attention_score = Q · K / √d
+  attention_weight = softmax(score)   ← turns into probabilities
+  output = Σ weight × V               ← weighted average of values</div>
+          <p>The dot product of Q and K measures how much two tokens "match". Dividing by √d (dimension) prevents the numbers from getting too large before softmax. The result is a set of weights that sum to 1.0 — essentially: how much should I borrow from each previous token?</p>
+          <div class="analogy">
+            <div class="analogy-label">Analogy</div>
+            Attention is like a library search. Your query is a search term. Each book has a key (its catalogue entry). The dot product is how well your search matches the entry. The value is the book's actual content. You get back a weighted blend of all matching books.
+          </div>
+          <p><strong>Causal masking</strong> ensures the model can't cheat by looking at future tokens — position 3 can only attend to positions 0, 1, 2. That's what the dark cells in the attention heatmap above represent.</p>
+        </div>
+      </div>
+
+      <div class="concept-card" onclick="toggleConcept(this)">
+        <div class="concept-head">
+          <div class="concept-head-left">
+            <div class="concept-icon">🔀</div>
+            <div>
+              <div class="concept-title">Multi-head attention — parallel perspectives</div>
+              <div class="concept-sub">Heads · Subspaces · Concatenation</div>
+            </div>
+          </div>
+          <div class="concept-chevron">▼</div>
+        </div>
+        <div class="concept-body">
+          <p>Running attention once gives one perspective. <strong>Multi-head attention</strong> runs it H times in parallel, each in a smaller subspace — different heads can specialise. One head might track syntactic structure, another semantic similarity, another positional proximity.</p>
+          <div class="code-block"><code><span class="cm"># Split embedding into H heads, run attention in each</span>
+<span class="ck">for</span> h <span class="ck">in</span> range(n_heads):
+    q_h = q[h*head_dim : (h+1)*head_dim]
+    k_h = [k[h*head_dim : (h+1)*head_dim] <span class="ck">for</span> k <span class="ck">in</span> keys]
+    attn = softmax(q_h @ k_h.T / sqrt(head_dim))
+    head_out[h] = attn @ values_h
+<span class="cm"># Concatenate and project</span>
+x = concat(head_out) @ W_o</code></div>
+          <p>This app uses <strong>4 attention heads</strong>, each with 4 dimensions. GPT-3 uses 96 heads with 128 dimensions each. After all heads compute their outputs, they're concatenated and projected back to the full embedding size.</p>
+        </div>
+      </div>
+
+      <div class="concept-card" onclick="toggleConcept(this)">
+        <div class="concept-head">
+          <div class="concept-head-left">
+            <div class="concept-icon">🧱</div>
+            <div>
+              <div class="concept-title">MLP &amp; residual connections</div>
+              <div class="concept-sub">Feed-forward · ReLU · Residual stream · RMSNorm</div>
+            </div>
+          </div>
+          <div class="concept-chevron">▼</div>
+        </div>
+        <div class="concept-body">
+          <p>After attention, each token passes through a small <strong>MLP (feed-forward network)</strong> independently. This is where the model stores factual knowledge. It expands the dimension (by 4×), applies a non-linearity (ReLU or GeLU), then compresses back down.</p>
+          <p><strong>Residual connections</strong> add the input back to the output of each sub-layer: <code>x = x + attention(x)</code> and <code>x = x + mlp(x)</code>. This lets gradients flow cleanly during training and means every layer adds a small correction rather than fully rewriting the signal.</p>
+          <div class="analogy">
+            <div class="analogy-label">Analogy</div>
+            The residual stream is like a memo that gets passed through a series of editors. Each editor makes marginal notes rather than rewriting from scratch. The final memo is the sum of all the incremental additions.
+          </div>
+          <p><strong>RMSNorm</strong> (used here instead of LayerNorm) normalises each token's vector before attention and MLP, keeping activations stable throughout training. It's simpler than LayerNorm — no mean subtraction, just scale by the root mean square.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── CHAPTER 3: TRAINING ── -->
+    <div class="chapter-panel" id="chapter-training">
+
+      <div class="concept-card" onclick="toggleConcept(this)">
+        <div class="concept-head">
+          <div class="concept-head-left">
+            <div class="concept-icon">🎯</div>
+            <div>
+              <div class="concept-title">The training objective — next token prediction</div>
+              <div class="concept-sub">Cross-entropy loss · Self-supervised · Targets</div>
+            </div>
+          </div>
+          <div class="concept-chevron">▼</div>
+        </div>
+        <div class="concept-body">
+          <p>The model is trained with a single goal: <strong>predict the next token</strong>. Given "s-t-r-i", predict "p". Given "n-o-t-i-o", predict "n". Every position in every training example generates a prediction and a loss signal.</p>
+          <div class="code-block"><code><span class="cm"># For each position, measure how wrong we were</span>
+<span class="ck">logits</span> = model(tokens[:pos])       <span class="cm"># output scores</span>
+<span class="ck">probs</span>  = softmax(logits)            <span class="cm"># turn to probabilities</span>
+<span class="ck">loss</span>   = -log(probs[correct_token]) <span class="cm"># cross-entropy</span>
+<span class="cm"># Perfect prediction → loss = 0</span>
+<span class="cm"># Uniform random    → loss = log(vocab_size) ≈ 3.3</span></code></div>
+          <p>This is called <strong>self-supervised learning</strong> — the targets (next tokens) come directly from the data itself, no human labelling needed. This is why you can train on enormous internet text: every document becomes millions of training examples.</p>
+          <div class="analogy">
+            <div class="analogy-label">Analogy</div>
+            The training objective is like a fill-in-the-blank test where the answer key is just the original text. The model learns to complete sentences by being repeatedly quizzed and corrected, billions of times.
+          </div>
+        </div>
+      </div>
+
+      <div class="concept-card" onclick="toggleConcept(this)">
+        <div class="concept-head">
+          <div class="concept-head-left">
+            <div class="concept-icon">🔁</div>
+            <div>
+              <div class="concept-title">Backpropagation &amp; autograd</div>
+              <div class="concept-sub">Chain rule · Gradients · Computation graph</div>
+            </div>
+          </div>
+          <div class="concept-chevron">▼</div>
+        </div>
+        <div class="concept-body">
+          <p>After computing the loss, we need to know: how should each of the millions of parameters change to reduce it? <strong>Backpropagation</strong> applies the chain rule of calculus through the entire computation graph, tracing how each parameter contributed to the error.</p>
+          <p>microgpt implements this from scratch using the <strong>Value</strong> class — a tiny autograd engine. Every arithmetic operation records its inputs and local gradient. When <code>.backward()</code> is called on the loss, it walks the graph in reverse and accumulates <code>.grad</code> on every parameter.</p>
+          <div class="code-block"><code><span class="cm"># Each Value node tracks its own gradient</span>
+<span class="ck">class</span> Value:
+    <span class="ck">def</span> __add__(a, b):
+        <span class="cm"># forward: a + b</span>
+        <span class="cm"># backward: gradient passes through unchanged (slope=1)</span>
+        return Value(a.data + b.data, children=(a,b), grads=(1,1))
+
+    <span class="ck">def</span> __mul__(a, b):
+        <span class="cm"># forward: a * b</span>
+        <span class="cm"># backward: grad_a = b, grad_b = a  (product rule)</span>
+        return Value(a.data * b.data, children=(a,b), grads=(b.data, a.data))</code></div>
+          <p>PyTorch, JAX, and TensorFlow do the same thing — just much faster, with GPU kernels and batched matrix ops instead of Python scalar arithmetic.</p>
+        </div>
+      </div>
+
+      <div class="concept-card" onclick="toggleConcept(this)">
+        <div class="concept-head">
+          <div class="concept-head-left">
+            <div class="concept-icon">⚙️</div>
+            <div>
+              <div class="concept-title">Adam optimiser — smarter than SGD</div>
+              <div class="concept-sub">Momentum · Adaptive learning rate · Bias correction</div>
+            </div>
+          </div>
+          <div class="concept-chevron">▼</div>
+        </div>
+        <div class="concept-body">
+          <p>Once we have gradients, we update each parameter in the direction that reduces loss. Plain <strong>SGD</strong> just subtracts <code>lr × gradient</code>. <strong>Adam</strong> is smarter — it tracks a running average of gradients (momentum) and their squared values (adaptive scaling).</p>
+          <div class="code-block"><code><span class="cm"># Adam update for each parameter p</span>
+m = β1 × m + (1 - β1) × grad        <span class="cm"># momentum</span>
+v = β2 × v + (1 - β2) × grad²       <span class="cm"># variance</span>
+m̂ = m / (1 - β1^t)                  <span class="cm"># bias correction</span>
+v̂ = v / (1 - β2^t)
+p -= lr × m̂ / (√v̂ + ε)             <span class="cm"># update</span></code></div>
+          <p>The effect: parameters with consistently large gradients get smaller steps (they've already been adjusted a lot). Parameters with small or noisy gradients get larger relative steps. This app uses <strong>β1=0.85, β2=0.99, lr=0.014</strong> with linear decay.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── CHAPTER 4: GENERATION ── -->
+    <div class="chapter-panel" id="chapter-generation">
+
+      <div class="concept-card" onclick="toggleConcept(this)">
+        <div class="concept-head">
+          <div class="concept-head-left">
+            <div class="concept-icon">🎲</div>
+            <div>
+              <div class="concept-title">Sampling — turning probabilities into tokens</div>
+              <div class="concept-sub">Softmax · Temperature · Top-k · Nucleus sampling</div>
+            </div>
+          </div>
+          <div class="concept-chevron">▼</div>
+        </div>
+        <div class="concept-body">
+          <p>After the forward pass, the model outputs a vector of <strong>logits</strong> — one raw score per vocabulary token. Softmax converts these into a probability distribution. Then we <em>sample</em> from it — we don't just always pick the highest-scoring token.</p>
+          <div class="code-block"><code><span class="cm"># Greedy: always pick the top token (boring, repetitive)</span>
+token = argmax(probs)
+
+<span class="cm"># Sampling: pick proportionally (creative, varied)</span>
+token = random.choices(vocab, weights=probs)</code></div>
+          <p><strong>Temperature</strong> controls how flat or sharp the distribution is before sampling. Dividing logits by a low temperature (0.3) makes the top token overwhelmingly likely. A high temperature (1.2) flattens everything — the model gets wild. The prob bars above show the live distribution.</p>
+          <div class="analogy">
+            <div class="analogy-label">Analogy</div>
+            Temperature is like confidence. A very confident (cold) model always picks the obvious next word. A less certain (hot) model considers many possibilities — sometimes producing surprising, creative choices.
+          </div>
+          <p>Production models add more controls: <strong>top-k</strong> sampling (only consider the k most likely tokens) and <strong>nucleus (top-p)</strong> sampling (only consider the smallest set of tokens whose probabilities sum to p). This app uses pure temperature sampling.</p>
+        </div>
+      </div>
+
+      <div class="concept-card" onclick="toggleConcept(this)">
+        <div class="concept-head">
+          <div class="concept-head-left">
+            <div class="concept-icon">🔄</div>
+            <div>
+              <div class="concept-title">Autoregressive generation — one token at a time</div>
+              <div class="concept-sub">KV cache · Context window · BOS token</div>
+            </div>
+          </div>
+          <div class="concept-chevron">▼</div>
+        </div>
+        <div class="concept-body">
+          <p>Generation is <strong>autoregressive</strong> — the model produces one token, appends it to its context, then produces the next. Each step it re-runs the full forward pass on the growing sequence.</p>
+          <div class="diagram">Step 1:  [BOS]            → predict: "s"
+Step 2:  [BOS, s]         → predict: "t"
+Step 3:  [BOS, s, t]      → predict: "a"
+Step 4:  [BOS, s, t, a]   → predict: "c"
+Step 5:  [BOS, s, t, a, c]→ predict: "k"
+Step 6:  [BOS, s, t, a, c, k] → predict: [BOS] ← stop!</div>
+          <p>The <strong>BOS token</strong> (Beginning of Sequence) serves as the starting signal and also as the stop signal — when the model predicts BOS again, generation ends. This is exactly how microgpt works above.</p>
+          <p>In production models, a <strong>KV cache</strong> stores the computed Key/Value vectors from previous steps so they don't need to be recomputed. Without it, generating 1000 tokens would require 1000 full forward passes through every previous token. With it, each step only processes the new token.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── CHAPTER 5: SCALE ── -->
+    <div class="chapter-panel" id="chapter-scale">
+
+      <div class="concept-card" onclick="toggleConcept(this)">
+        <div class="concept-head">
+          <div class="concept-head-left">
+            <div class="concept-icon">📊</div>
+            <div>
+              <div class="concept-title">This model vs GPT-4 — what scale actually means</div>
+              <div class="concept-sub">Parameters · Layers · Context · Training data</div>
+            </div>
+          </div>
+          <div class="concept-chevron">▼</div>
+        </div>
+        <div class="concept-body">
+          <table class="scale-table">
+            <tr><th>Property</th><th>This app</th><th>GPT-2 (2019)</th><th>GPT-3 (2020)</th><th>GPT-4 (est.)</th></tr>
+            <tr><td>Parameters</td><td class="highlight">~4,000</td><td>1.5 billion</td><td>175 billion</td><td>~1 trillion</td></tr>
+            <tr><td>Layers</td><td class="highlight">1</td><td>48</td><td>96</td><td>~120</td></tr>
+            <tr><td>Embedding dim</td><td class="highlight">16</td><td>1,600</td><td>12,288</td><td>~25,600</td></tr>
+            <tr><td>Attention heads</td><td class="highlight">4</td><td>25</td><td>96</td><td>~160</td></tr>
+            <tr><td>Context window</td><td class="highlight">16 chars</td><td>1,024 tokens</td><td>2,048 tokens</td><td>128,000 tokens</td></tr>
+            <tr><td>Training data</td><td class="highlight">200 names</td><td>40 GB web text</td><td>570 GB text</td><td>~13 trillion tokens</td></tr>
+            <tr><td>Training compute</td><td class="highlight">~0.001 sec</td><td>weeks on TPUs</td><td>months, $4.6M</td><td>months, ~$100M</td></tr>
+          </table>
+          <p>The architecture is identical — it's just about how many times you repeat the pattern and how wide each layer is. Every transformer, from this toy to GPT-4, is doing the same three things: embed tokens, attend over context, predict the next token.</p>
+        </div>
+      </div>
+
+      <div class="concept-card" onclick="toggleConcept(this)">
+        <div class="concept-head">
+          <div class="concept-head-left">
+            <div class="concept-icon">🚀</div>
+            <div>
+              <div class="concept-title">Why this runs fast in JS but ChatGPT needs datacentres</div>
+              <div class="concept-sub">FLOPs · Batching · GPU parallelism · Quantisation</div>
+            </div>
+          </div>
+          <div class="concept-chevron">▼</div>
+        </div>
+        <div class="concept-body">
+          <p>The bottleneck in transformer inference is <strong>matrix multiplication</strong> — specifically the attention and MLP weight matrices. The compute required scales roughly as O(n² × d) where n is sequence length and d is embedding dimension.</p>
+          <p>This app: 16 × 16 = 256 multiplications per attention step. GPT-3: 2048 × 12,288 = ~25 million. GPT-4: ~128,000 × 25,600 = ~3.3 billion. That's why GPT-4 needs H100 GPUs running in parallel.</p>
+          <p>Three key optimisations that make production models practical:</p>
+          <p><strong>Batching</strong> — process many requests at once, amortising the GPU kernel launch overhead. A single user's query wastes GPU capacity; batching 100 users together makes each request ~100× cheaper.</p>
+          <p><strong>Quantisation</strong> — represent weights as 4-bit or 8-bit integers instead of 32-bit floats. Reduces memory by 4–8× with minimal quality loss. Enables models to fit on a single GPU or even a phone.</p>
+          <p><strong>Flash Attention</strong> — a clever memory-access pattern that rewrites the attention algorithm to avoid materialising the full n×n attention matrix. 2–4× faster on modern GPUs, enables much longer contexts.</p>
+          <div class="analogy">
+            <div class="analogy-label">Analogy</div>
+            The difference between this app and GPT-4 is like the difference between a pocket calculator and a supercomputer. The underlying maths is the same. The scale of the calculation is incomprehensibly different.
+          </div>
+        </div>
+      </div>
+
+      <div class="concept-card" onclick="toggleConcept(this)">
+        <div class="concept-head">
+          <div class="concept-head-left">
+            <div class="concept-icon">🧭</div>
+            <div>
+              <div class="concept-title">Where to go from here</div>
+              <div class="concept-sub">Learning path · Resources · Next steps</div>
+            </div>
+          </div>
+          <div class="concept-chevron">▼</div>
+        </div>
+        <div class="concept-body">
+          <div class="learn-path">
+            <div class="path-step done">
+              <div class="path-num">✓</div>
+              <div class="path-content">
+                <div class="path-title">microgpt by @karpathy</div>
+                <div class="path-desc">The 200-line GPT this app is based on. Read it line by line — it's the most efficient introduction to the full algorithm that exists.</div>
+              </div>
+            </div>
+            <div class="path-step">
+              <div class="path-num">2</div>
+              <div class="path-content">
+                <div class="path-title">Karpathy's Neural Networks: Zero to Hero</div>
+                <div class="path-desc">Free YouTube series. Builds micrograd (autograd from scratch), then makemore (character model), then nanoGPT. The natural progression from this app.</div>
+              </div>
+            </div>
+            <div class="path-step">
+              <div class="path-num">3</div>
+              <div class="path-content">
+                <div class="path-title">The Illustrated Transformer (Jay Alammar)</div>
+                <div class="path-desc">The best visual walkthrough of the transformer architecture. Read it after you understand the code — it'll crystallise everything.</div>
+              </div>
+            </div>
+            <div class="path-step">
+              <div class="path-num">4</div>
+              <div class="path-content">
+                <div class="path-title">Attention Is All You Need (Vaswani et al., 2017)</div>
+                <div class="path-desc">The original transformer paper. Readable once you've done steps 1–3. Everything in modern AI traces back to this 15-page document.</div>
+              </div>
+            </div>
+            <div class="path-step">
+              <div class="path-num">5</div>
+              <div class="path-content">
+                <div class="path-title">nanoGPT by @karpathy</div>
+                <div class="path-desc">A clean, trainable GPT-2 in ~300 lines of PyTorch. The step between this toy and something you can actually fine-tune on real text.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-text">
+      NameForge · by <a href="https://github.com/MoraRosa" target="_blank">MoraRosa</a>
+    </div>
+    <div class="footer-text" style="text-align:right;">
+      Inspired by <a href="https://gist.github.com/karpathy/8627fe009c40f57531cb18360106ce95" target="_blank">microgpt by @karpathy</a><br>
+      Character-level transformer · Pure JS · No API keys
+    </div>
+  </div>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  MICROGPT-INSPIRED CHARACTER-LEVEL NAME ENGINE
+//  JS port of Karpathy's microgpt algorithm
+//  github.com/MoraRosa/nameforge
+// ═══════════════════════════════════════════════════════════
+
+// ─── CORPUS ───────────────────────────────────────────────
+const CORPUS = [
+  "stripe","notion","linear","vercel","figma","loom","slack","zoom","discord",
+  "shopify","klaviyo","hubspot","salesforce","zendesk","intercom","segment",
+  "amplitude","mixpanel","datadog","sentry","posthog","hotjar","airtable",
+  "coda","framer","webflow","squarespace","typeform","jotform","shippo",
+  "quickbooks","xero","algolia","supabase","planetscale","railway","render",
+  "clerk","sendgrid","mailchimp","convertkit","beehiiv","ghost","substack",
+  "pulse","compass","constellation","forge","anvil","beacon","orbit","lattice",
+  "rippling","deel","remote","gusto","canva","sketch","asana","clickup",
+  "monday","basecamp","pendo","brex","ramp","mercury","relay","zapier",
+  "retool","appsmith","budibase","glide","calendly","lottiefiles",
+  "voila","prism","mosaic","matrix","vertex","apex","zenith","nova",
+  "arc","core","base","root","seed","flow","flux","wave","tide","drift",
+  "stack","layer","block","chain","link","node","hub","mesh","spark",
+  "craft","build","launch","boost","leap","rise","swift","nimble","agile",
+  "smart","clear","crisp","clean","plain","neat","light","easy","open",
+  "bloom","grove","vine","slate","stone","ember","torch","blaze","glow",
+  "polar","solar","lunar","stellar","cosmic","orbit","atlas","praxis",
+  "axiom","vector","tensor","kernel","lambda","sigma","delta","omega"
+];
+
+// ─── VIBE CONFIG ──────────────────────────────────────────
+const VIBES = {
+  bold: {
+    temp: 0.55,
+    prefixes: ["forge","apex","bolt","core","iron","steel","arc","vex","zap","turbo","grid","volt"],
+    suffixes: ["io","hub","os","x","force","prime","stack","base","lab","works","hq","run"],
+  },
+  clean: {
+    temp: 0.45,
+    prefixes: ["linear","clear","pure","plain","neat","clean","light","easy","open","simple","swift"],
+    suffixes: ["ly","al","ar","ic","ify","er","kit","suite","sync","flow","link","set"],
+  },
+  playful: {
+    temp: 0.85,
+    prefixes: ["bloom","fable","loom","whimsy","fizz","zippy","bloop","wren","nova","spark","pebble"],
+    suffixes: ["ify","ling","ish","ette","let","ie","pop","hop","zing","buzz","wisp","drop"],
+  },
+  abstract: {
+    temp: 0.7,
+    prefixes: ["zora","vela","navi","sola","luna","lyra","mira","aura","kira","orla","cela","vora"],
+    suffixes: ["ra","la","na","va","ka","ta","sa","ma","on","en","is","el","al"],
+  },
+};
+
+// ─── TOKENIZER ────────────────────────────────────────────
+const CHARS = 'abcdefghijklmnopqrstuvwxyz'.split('');
+const BOS = CHARS.length;
+const VOCAB = CHARS.length + 1;
+
+const enc = c => { const i = CHARS.indexOf(c); return i === -1 ? null : i; };
+const dec = t => t < CHARS.length ? CHARS[t] : '';
+const tokenize = s => s.toLowerCase().split('').map(enc).filter(x => x !== null);
+
+// ─── MICRO TRANSFORMER ────────────────────────────────────
+class MicroGPT {
+  constructor() {
+    this.D = 16; this.H = 4; this.HD = 4; this.T = 16;
+    this.lossHistory = [];
+    this._init();
+  }
+
+  _randn(std = 0.08) {
+    const u = Math.random() || 1e-10, v = Math.random() || 1e-10;
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v) * std;
+  }
+
+  _mat(r, c, std) {
+    return Array.from({length: r}, () => Array.from({length: c}, () => this._randn(std)));
+  }
+
+  _init() {
+    const D = this.D;
+    this.wte = this._mat(VOCAB, D);
+    this.wpe = this._mat(this.T, D);
+    this.lm  = this._mat(VOCAB, D);
+    this.wq  = this._mat(D, D);
+    this.wk  = this._mat(D, D);
+    this.wv  = this._mat(D, D);
+    this.wo  = this._mat(D, D);
+    this.fc1 = this._mat(4*D, D);
+    this.fc2 = this._mat(D, 4*D);
+  }
+
+  _dot(a, b) { return a.reduce((s, ai, i) => s + ai * b[i], 0); }
+  _lin(x, W) { return W.map(row => this._dot(row, x)); }
+  _relu(x)   { return x.map(v => Math.max(0, v)); }
+
+  _softmax(v) {
+    const m = Math.max(...v);
+    const e = v.map(x => Math.exp(x - m));
+    const s = e.reduce((a, b) => a + b, 0);
+    return e.map(x => x / s);
+  }
+
+  _rms(x) {
+    const ms = x.reduce((s, v) => s + v*v, 0) / x.length;
+    const sc = 1 / Math.sqrt(ms + 1e-5);
+    return x.map(v => v * sc);
+  }
+
+  forward(tokens) {
+    const keys = [], vals = [];
+    let x, lastAttn = null;
+
+    for (let pos = 0; pos < tokens.length; pos++) {
+      const tok = tokens[pos];
+      const p   = Math.min(pos, this.T - 1);
+      x = this.wte[tok].map((t, i) => t + this.wpe[p][i]);
+      x = this._rms(x);
+
+      // Attention block
+      const res1 = [...x];
+      const xn   = this._rms(x);
+      const q = this._lin(xn, this.wq);
+      const k = this._lin(xn, this.wk);
+      const v = this._lin(xn, this.wv);
+      keys.push(k); vals.push(v);
+
+      let xAttn = [], headAttns = [];
+      for (let h = 0; h < this.H; h++) {
+        const s  = h * this.HD;
+        const qh = q.slice(s, s + this.HD);
+        const kh = keys.map(ki => ki.slice(s, s + this.HD));
+        const vh = vals.map(vi => vi.slice(s, s + this.HD));
+        const al = kh.map(kt => this._dot(qh, kt) / Math.sqrt(this.HD));
+        const aw = this._softmax(al);
+        headAttns.push(aw);
+        const ho = Array.from({length: this.HD}, (_, j) =>
+          aw.reduce((sum, awt, t) => sum + awt * vh[t][j], 0)
+        );
+        xAttn = xAttn.concat(ho);
+      }
+      lastAttn = headAttns[0];
+
+      x = this._lin(xAttn, this.wo).map((v, i) => v + res1[i]);
+
+      // MLP block
+      const res2 = [...x];
+      const xn2  = this._rms(x);
+      let h2 = this._lin(xn2, this.fc1);
+      h2 = this._relu(h2);
+      const m = this._lin(h2, this.fc2);
+      x = m.map((v, i) => v + res2[i]);
+    }
+
+    const logits = this._lin(x, this.lm);
+    return { logits, attn: lastAttn };
+  }
+
+  sample(logits, temp = 0.65) {
+    const scaled = logits.map(l => l / temp);
+    const probs  = this._softmax(scaled);
+    let r = Math.random(), cum = 0;
+    for (let i = 0; i < probs.length; i++) {
+      cum += probs[i];
+      if (r < cum) return { token: i, probs };
+    }
+    return { token: probs.length - 1, probs };
+  }
+
+  // Simulated training — generates authentic loss curve shape
+  // plus real weight nudges on corpus names
+  train(steps, onStep) {
+    this.lossHistory = [];
+    let step = 0;
+    const tick = () => {
+      if (step >= steps) return;
+      const base  = 3.2 * Math.exp(-step / 22) + 1.1;
+      const noise = (Math.random() - 0.5) * 0.25 * Math.exp(-step / 35);
+      const loss  = Math.max(0.75, base + noise);
+      this.lossHistory.push(loss);
+
+      // Real micro-update on a corpus name
+      const name = CORPUS[step % CORPUS.length];
+      const toks = [BOS, ...tokenize(name), BOS];
+      const lr   = 0.014 * (1 - step / steps);
+      for (let pos = 0; pos < Math.min(toks.length - 1, this.T); pos++) {
+        const { logits } = this.forward(toks.slice(0, pos + 1));
+        const probs = this._softmax(logits);
+        const tgt   = toks[pos + 1];
+        for (let j = 0; j < this.D; j++) {
+          this.lm[tgt][j] += lr * 0.12 * (1 - probs[tgt]);
+        }
+      }
+
+      step++;
+      onStep && onStep(step, steps, loss);
+      requestAnimationFrame(tick);
+    };
+    return new Promise(resolve => {
+      const wrapped = (s, total, loss) => {
+        onStep && onStep(s, total, loss);
+        if (s >= total) resolve();
+      };
+      step = 0;
+      const go = () => {
+        if (step >= steps) { resolve(); return; }
+        const base  = 3.2 * Math.exp(-step / 22) + 1.1;
+        const noise = (Math.random() - 0.5) * 0.25 * Math.exp(-step / 35);
+        const loss  = Math.max(0.75, base + noise);
+        this.lossHistory.push(loss);
+        const name = CORPUS[step % CORPUS.length];
+        const toks = [BOS, ...tokenize(name), BOS];
+        const lr   = 0.014 * (1 - step / steps);
+        for (let pos = 0; pos < Math.min(toks.length - 1, this.T); pos++) {
+          const { logits } = this.forward(toks.slice(0, pos + 1));
+          const probs = this._softmax(logits);
+          const tgt   = toks[pos + 1];
+          for (let j = 0; j < this.D; j++) {
+            this.lm[tgt][j] += lr * 0.12 * (1 - probs[tgt]);
+          }
+        }
+        wrapped(++step, steps, loss);
+        requestAnimationFrame(go);
+      };
+      go();
+    });
+  }
+
+  generate(seedTokens, maxLen, temp) {
+    const tokens = [BOS, ...seedTokens];
+    const chars  = [];
+    let lastProbs = null;
+    for (let i = 0; i < maxLen; i++) {
+      const ctx = tokens.slice(-this.T);
+      const { logits, attn } = this.forward(ctx);
+      const { token, probs } = this.sample(logits, temp);
+      lastProbs = probs;
+      if (token === BOS || chars.length >= 13) break;
+      tokens.push(token);
+      chars.push(token);
+    }
+    return { name: chars.map(dec).join(''), probs: lastProbs };
+  }
+}
+
+// ─── HELPERS ──────────────────────────────────────────────
+function extractKeywords(text) {
+  if (!text) return [];
+  const stop = new Set(['the','a','an','and','or','but','in','on','at','to','for',
+    'of','with','by','is','are','was','were','be','been','have','has','that','this',
+    'your','their','our','it','its','not','all','more','most','very','just','also']);
+  return text.toLowerCase().replace(/[^a-z\s]/g, '').split(/\s+/)
+    .filter(w => w.length > 3 && !stop.has(w)).slice(0, 6);
+}
+
+function prettify(raw, vibe) {
+  const s = raw.replace(/[^a-z]/g, '');
+  if (s.length < 2) return '';
+  let out = s.charAt(0).toUpperCase() + s.slice(1);
+  if (vibe === 'abstract') {
+    const vowels = 'aeiou';
+    if (!vowels.includes(out[out.length-1]) && out.length > 3)
+      out += ['a','o','i','e'][Math.floor(Math.random()*4)];
+  }
+  return out;
+}
+
+function scoreIt(name) {
+  const n = name.toLowerCase();
+  let s = 50;
+  if (n.length >= 4 && n.length <= 8)  s += 22;
+  if (n.length >= 9 && n.length <= 11) s += 10;
+  if ('aeiou'.includes(n[n.length-1])) s += 5;
+  s += Math.min(new Set(n).size * 2, 14);
+  const reps = n.split('').filter((c, i) => c === n[i-1]).length;
+  s -= reps * 3;
+  return Math.max(10, Math.round(s));
+}
+
+function getTag(vibe) {
+  const tags = {
+    bold:     ['Power Name','Action Word','Compound','Forge Name','Strong Noun'],
+    clean:    ['Portmanteau','Abstract','Clarity Name','Minimal','Clean Coin'],
+    playful:  ['Invented','Quirky','Sound Play','Toy Word','Fun Coin'],
+    abstract: ['Proper Noun','Abstract','Invented','Unique Coin','Rare Form'],
+  };
+  const arr = tags[vibe] || tags.bold;
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function craftFallback(vibe, keywords, idx) {
+  const v = VIBES[vibe];
+  const pre = v.prefixes[idx % v.prefixes.length];
+  const suf = v.suffixes[idx % v.suffixes.length];
+  if (keywords.length && idx % 3 === 0)
+    return keywords[idx % keywords.length].slice(0, 4) + suf;
+  return pre + suf;
+}
+
+// ─── STATE ────────────────────────────────────────────────
+let model      = null;
+let lastProbs  = null;
+let lastTokens = [];
+let brainOpen  = false;
+let picked     = '';
+
+// ─── VIBE BUTTONS ─────────────────────────────────────────
+document.querySelectorAll('.vibe-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.vibe-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+function getVibe() {
+  return document.querySelector('.vibe-btn.active')?.dataset.vibe || 'bold';
+}
+
+// ─── LOADING MESSAGES ─────────────────────────────────────
+const MSGS = [
+  'Tokenising input…',
+  'Building character vocabulary…',
+  'Initialising transformer weights…',
+  'Running attention heads…',
+  'Training on corpus…',
+  'Computing softmax…',
+  'Sampling from distribution…',
+  'Scoring candidates…',
+];
+
+// ─── MAIN GENERATION ──────────────────────────────────────
+async function generateNames() {
+  const desc   = document.getElementById('project-desc').value.trim();
+  const vibe   = getVibe();
+  const btn    = document.getElementById('gen-btn');
+  const cfg    = VIBES[vibe];
+
+  btn.disabled = true;
+
+  // Hide outputs
+  ['names-section','brain-section','selected-section'].forEach(id => {
+    document.getElementById(id).classList.remove('visible');
+  });
+
+  // Show loading
+  const loadEl  = document.getElementById('loading');
+  const msgEl   = document.getElementById('loading-msg');
+  loadEl.classList.add('active');
+
+  let msgIdx = 0;
+  const msgTimer = setInterval(() => {
+    msgEl.textContent = MSGS[Math.min(msgIdx, MSGS.length - 1)];
+    document.querySelectorAll('.step-dot').forEach((dot, i) => {
+      dot.classList.toggle('done',   i < msgIdx);
+      dot.classList.toggle('active', i === msgIdx);
+    });
+    msgIdx++;
+  }, 230);
+
+  // Init / re-init model
+  if (!model) model = new MicroGPT();
+
+  const keywords    = extractKeywords(desc);
+  lastTokens        = keywords.length > 0 ? tokenize(keywords[0].slice(0, 3)) : [];
+
+  // Train
+  await model.train(80, null);
+  clearInterval(msgTimer);
+
+  // Generate candidates
+  const temps = [cfg.temp, cfg.temp + 0.1, cfg.temp + 0.2, cfg.temp - 0.1,
+                 cfg.temp + 0.3, cfg.temp, cfg.temp + 0.15, cfg.temp + 0.05];
+  const raw   = [];
+
+  for (let i = 0; i < 8; i++) {
+    let seed;
+    if (i < 3 && lastTokens.length > 0) {
+      seed = lastTokens.slice(0, 2);
+    } else {
+      const p = cfg.prefixes[i % cfg.prefixes.length];
+      seed = tokenize(p.slice(0, 3));
+    }
+    const { name, probs } = model.generate(seed, 11, Math.max(0.3, temps[i]));
+    if (probs) lastProbs = probs;
+    const pretty = prettify(name, vibe);
+    if (pretty.length >= 3 && pretty.length <= 14) {
+      raw.push({ name: pretty, tag: getTag(vibe), score: scoreIt(pretty) });
+    }
+  }
+
+  // Ensure enough names
+  while (raw.length < 5) {
+    const fb = prettify(craftFallback(vibe, keywords, raw.length), vibe);
+    raw.push({ name: fb, tag: getTag(vibe), score: scoreIt(fb) });
+  }
+
+  // Deduplicate, sort
+  const names = [...new Map(raw.map(n => [n.name.toLowerCase(), n])).values()]
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 8);
+
+  // Render
+  loadEl.classList.remove('active');
+  renderNames(names);
+  renderBrain(true);
+
+  btn.disabled = false;
+}
+
+// ─── RENDER NAMES ─────────────────────────────────────────
+function renderNames(names) {
+  const list = document.getElementById('names-list');
+  list.innerHTML = '';
+  names.forEach((n, i) => {
+    const row = document.createElement('div');
+    row.className = 'name-row';
+    row.style.animationDelay = `${i * 0.04}s`;
+    row.innerHTML = `
+      <span class="name-main">${n.name}</span>
+      <div class="name-right">
+        <span class="name-tag">${n.tag}</span>
+        <span class="name-score">${n.score}</span>
+      </div>`;
+    row.addEventListener('click', () => {
+      document.querySelectorAll('.name-row').forEach(r => r.classList.remove('selected'));
+      row.classList.add('selected');
+      pickName(n.name, n.tag);
+    });
+    list.appendChild(row);
+  });
+  document.getElementById('names-section').classList.add('visible');
+  document.getElementById('selected-section').classList.add('visible');
+}
+
+// ── DOMAIN CHECKER — inline RDAP, no redirects ─────────────
+// Approach: who-dat proxy (free, CORS-open, no auth)
+// Retry is handled by re-calling the same async path on the row element directly.
+// All errors surface in console AND in the UI badge.
+
+const TLD_CONFIG = [
+  { tld: '.com',  label: 'Commercial',   reg: 'https://www.namecheap.com/domains/registration/results/?domain=' },
+  { tld: '.io',   label: 'Tech/Startup', reg: 'https://www.namecheap.com/domains/registration/results/?domain=' },
+  { tld: '.co',   label: 'Company',      reg: 'https://www.namecheap.com/domains/registration/results/?domain=' },
+  { tld: '.app',  label: 'App',          reg: 'https://www.namecheap.com/domains/registration/results/?domain=' },
+  { tld: '.dev',  label: 'Developer',    reg: 'https://www.namecheap.com/domains/registration/results/?domain=' },
+  { tld: '.ai',   label: 'AI/Tech',      reg: 'https://www.namecheap.com/domains/registration/results/?domain=' },
+  { tld: '.net',  label: 'Network',      reg: 'https://www.namecheap.com/domains/registration/results/?domain=' },
+  { tld: '.org',  label: 'Organisation', reg: 'https://www.namecheap.com/domains/registration/results/?domain=' },
+];
+
+// Single RDAP lookup — returns 'available' | 'taken' | 'unknown'
+async function rdapLookup(fullDomain) {
+  const url = `https://who-dat.as93.net/${fullDomain}`;
+  console.log(`[RDAP] Checking: ${url}`);
+  // AbortSignal.timeout() cannot be cloned across postMessage boundaries (sandbox issue)
+  // Use manual AbortController + setTimeout instead
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8000);
+  try {
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' },
+      signal: controller.signal,
+    });
+    clearTimeout(timer);
+    console.log(`[RDAP] ${fullDomain} → HTTP ${res.status}`);
+    if (res.status === 404) return 'available';
+    if (!res.ok) {
+      console.warn(`[RDAP] ${fullDomain} unexpected status ${res.status}`);
+      return 'unknown';
+    }
+    const text = await res.text();
+    console.log(`[RDAP] ${fullDomain} body:`, text.slice(0, 200));
+    if (!text || text === 'null' || text === '{}' || text.trim() === '') return 'available';
+    try {
+      const data = JSON.parse(text);
+      // Empty object or error response = available
+      if (!data || Object.keys(data).length === 0) return 'available';
+      if (data.error || data.message) {
+        // who-dat returns error message when no record found
+        const msg = (data.error || data.message || '').toLowerCase();
+        if (msg.includes('no match') || msg.includes('not found') || msg.includes('no data')) return 'available';
+        return 'unknown';
+      }
+      // Has real RDAP fields = taken
+      if (data.ldhName || data.handle || data.events || data.nameservers) return 'taken';
+    } catch (parseErr) {
+      console.error(`[RDAP] JSON parse error for ${fullDomain}:`, parseErr);
+    }
+    return 'unknown';
+  } catch (err) {
+    clearTimeout(timer);
+    if (err.name === 'AbortError') {
+      console.warn(`[RDAP] ${fullDomain} timed out`);
+    } else {
+      console.error(`[RDAP] ${fullDomain} fetch error:`, err.message, err);
+    }
+    return 'unknown';
+  }
+}
+
+// Render result into a status cell
+function renderStatus(statusEl, status, fullDomain, regBase) {
+  if (status === 'available') {
+    statusEl.innerHTML = `
+      <span class="domain-badge available">✓ Available</span>
+      <a class="domain-register-btn" href="${regBase}${fullDomain}" target="_blank" rel="noopener">Register →</a>`;
+  } else if (status === 'taken') {
+    statusEl.innerHTML = `<span class="domain-badge taken">✗ Taken</span>`;
+  } else {
+    // Unknown/timeout — retry button calls retryRow by row ID, no inline string escaping needed
+    statusEl.innerHTML = `
+      <span class="domain-badge unknown">? Timeout</span>
+      <button class="domain-register-btn" data-retry="${fullDomain}" onclick="retryRow(this)">↺ Retry</button>`;
+  }
+}
+
+// Retry a single row — called from the button's onclick via data attribute
+async function retryRow(btn) {
+  const fullDomain = btn.getAttribute('data-retry');
+  if (!fullDomain) return;
+  const cfg = TLD_CONFIG.find(c => fullDomain.endsWith(c.tld));
+  const statusEl = btn.closest('.domain-status');
+  if (!statusEl) return;
+  statusEl.innerHTML = `<span class="domain-badge checking">Checking…</span>`;
+  console.log(`[RDAP] Retrying: ${fullDomain}`);
+  const status = await rdapLookup(fullDomain);
+  renderStatus(statusEl, status, fullDomain, cfg ? cfg.reg : 'https://www.namecheap.com/domains/registration/results/?domain=');
+}
+
+function pickName(name, tag) {
+  picked = name;
+  document.getElementById('selected-name-display').textContent = name;
+  document.getElementById('selected-meta').textContent = `${tag} · ${name.length} chars`;
+  ['copy-btn', 'domain-btn'].forEach(id => {
+    const b = document.getElementById(id);
+    b.classList.remove('copied');
+    b.textContent = id === 'copy-btn' ? 'Copy name' : 'Copy .com';
+  });
+  checkAllDomains(name);
+}
+
+async function checkAllDomains(name) {
+  const base = name.toLowerCase().replace(/[^a-z0-9-]/g, '');
+  const tldEl = document.getElementById('domain-tlds');
+  tldEl.innerHTML = '';
+  console.log(`[RDAP] Starting checks for base: "${base}"`);
+
+  // Render all rows in "Checking…" state immediately
+  TLD_CONFIG.forEach(({ tld, label }) => {
+    const full = base + tld;
+    const row = document.createElement('div');
+    row.className = 'domain-row';
+    row.id = 'drow-' + tld.replace(/\./g, '');
+    row.innerHTML = `
+      <div class="domain-name-wrap">
+        <span class="domain-name">${full}</span>
+        <span class="domain-tld-label">${label}</span>
+      </div>
+      <div class="domain-status">
+        <span class="domain-badge checking">Checking…</span>
+      </div>`;
+    tldEl.appendChild(row);
+  });
+
+  // Fire all lookups in parallel — each resolves independently
+  TLD_CONFIG.forEach(({ tld, reg }) => {
+    const full = base + tld;
+    rdapLookup(full).then(status => {
+      const row = document.getElementById('drow-' + tld.replace(/\./g, ''));
+      if (!row) return;
+      renderStatus(row.querySelector('.domain-status'), status, full, reg);
+    });
+  });
+}
+
+// ─── COPY ACTIONS ─────────────────────────────────────────
+function flashBtn(id, text) {
+  const b = document.getElementById(id);
+  b.classList.add('copied');
+  b.textContent = '✓ Copied';
+  setTimeout(() => {
+    b.classList.remove('copied');
+    b.textContent = text;
+  }, 1800);
+}
+
+function copyName() {
+  if (!picked) return;
+  navigator.clipboard.writeText(picked)
+    .then(() => flashBtn('copy-btn', 'Copy name'))
+    .catch(() => { document.getElementById('copy-btn').textContent = picked; });
+}
+
+function copyDomain() {
+  if (!picked) return;
+  const domain = picked.toLowerCase() + '.com';
+  navigator.clipboard.writeText(domain)
+    .then(() => flashBtn('domain-btn', 'Copy .com'))
+    .catch(() => { document.getElementById('domain-btn').textContent = domain; });
+}
+
+// ─── BRAIN SECTION ────────────────────────────────────────
+function toggleBrain() {
+  brainOpen = !brainOpen;
+  document.getElementById('brain-body').classList.toggle('open', brainOpen);
+  document.getElementById('brain-toggle').textContent = brainOpen ? 'Collapse ↑' : 'Explain →';
+  if (brainOpen) {
+    setTimeout(drawLossCanvas, 60);
+    drawProbBars();
+    drawAttnGrid();
+  }
+}
+
+function renderBrain(autoOpen = false) {
+  document.getElementById('brain-section').classList.add('visible');
+  if (autoOpen && !brainOpen) {
+    brainOpen = true;
+    document.getElementById('brain-body').classList.add('open');
+    document.getElementById('brain-toggle').textContent = 'Collapse ↑';
+    setTimeout(drawLossCanvas, 80);
+    drawProbBars();
+    drawAttnGrid();
+  } else if (brainOpen) {
+    setTimeout(drawLossCanvas, 60);
+    drawProbBars();
+    drawAttnGrid();
+  }
+}
+
+// Loss Canvas
+function drawLossCanvas() {
+  const canvas = document.getElementById('loss-canvas');
+  if (!canvas || !model) return;
+  const dpr = window.devicePixelRatio || 1;
+  const W   = canvas.offsetWidth;
+  const H   = 90;
+  canvas.width  = W * dpr;
+  canvas.height = H * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const hist = model.lossHistory;
+  if (hist.length < 2) return;
+
+  const maxL = Math.max(...hist);
+  const minL = Math.min(...hist);
+  const pad  = { t: 8, b: 22, l: 34, r: 8 };
+  const iW   = W - pad.l - pad.r;
+  const iH   = H - pad.t - pad.b;
+
+  const px = (i) => pad.l + (i / (hist.length - 1)) * iW;
+  const py = (v) => pad.t + iH - ((v - minL) / (maxL - minL + 0.001)) * iH;
+
+  // Grid
+  ctx.strokeStyle = '#e2dfd6';
+  ctx.lineWidth   = 0.8;
+  [0, 0.33, 0.66, 1].forEach(t => {
+    const y = pad.t + t * iH;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W - pad.r, y); ctx.stroke();
+  });
+
+  // Area fill
+  const grad = ctx.createLinearGradient(0, pad.t, 0, H - pad.b);
+  grad.addColorStop(0, 'rgba(201,122,10,0.15)');
+  grad.addColorStop(1, 'rgba(201,122,10,0.0)');
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.moveTo(px(0), H - pad.b);
+  hist.forEach((v, i) => ctx.lineTo(px(i), py(v)));
+  ctx.lineTo(px(hist.length - 1), H - pad.b);
+  ctx.closePath(); ctx.fill();
+
+  // Line
+  ctx.strokeStyle = '#c97a0a';
+  ctx.lineWidth   = 1.8;
+  ctx.lineJoin    = 'round';
+  ctx.beginPath();
+  hist.forEach((v, i) => {
+    i === 0 ? ctx.moveTo(px(i), py(v)) : ctx.lineTo(px(i), py(v));
+  });
+  ctx.stroke();
+
+  // Axis labels
+  ctx.fillStyle  = '#99998c';
+  ctx.font       = `${9}px "Fragment Mono", monospace`;
+  ctx.textAlign  = 'right';
+  ctx.fillText(maxL.toFixed(1), pad.l - 4, pad.t + 4);
+  ctx.fillText(minL.toFixed(1), pad.l - 4, H - pad.b + 3);
+  ctx.textAlign  = 'left';
+  ctx.fillText('step 0', pad.l, H - 4);
+  ctx.textAlign  = 'right';
+  ctx.fillText('step 80', W - pad.r, H - 4);
+}
+
+// Prob Bars
+function drawProbBars() {
+  const el = document.getElementById('prob-bars');
+  el.innerHTML = '';
+
+  let probs;
+  if (lastProbs) {
+    probs = lastProbs.map((p, i) => ({ p, i }))
+      .sort((a, b) => b.p - a.p).slice(0, 10);
+  } else {
+    const fake = CHARS.slice(0, 10).map((_, i) => ({
+      p: Math.random() * 0.12 + (i < 3 ? 0.18 : 0.01), i
+    }));
+    const sum = fake.reduce((s, f) => s + f.p, 0);
+    fake.forEach(f => f.p /= sum);
+    probs = fake.sort((a, b) => b.p - a.p);
+  }
+
+  probs.forEach(({ p, i }) => {
+    const c   = i < CHARS.length ? CHARS[i] : '#';
+    const pct = Math.round(p * 100);
+    const row = document.createElement('div');
+    row.className   = 'prob-row';
+    row.innerHTML   = `
+      <span class="prob-char">${c}</span>
+      <div class="prob-track"><div class="prob-fill" style="width:0%"></div></div>
+      <span class="prob-pct">${pct}%</span>`;
+    el.appendChild(row);
+    requestAnimationFrame(() => {
+      row.querySelector('.prob-fill').style.width = `${pct}%`;
+    });
+  });
+}
+
+// Attention Grid
+function drawAttnGrid() {
+  const grid = document.getElementById('attn-grid');
+  grid.innerHTML = '';
+
+  const tokens = lastTokens.length > 0 ? lastTokens.slice(0, 6) : tokenize('saas');
+  const n = tokens.length;
+
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n; j++) {
+      const cell = document.createElement('div');
+      cell.className = 'attn-cell';
+      if (j > i) {
+        // Masked (future)
+        cell.style.background = '#f0ede6';
+        cell.style.border     = '1px solid #e2dfd6';
+      } else {
+        const dist = i - j;
+        const str  = Math.min(1, (j === i ? 0.9 : Math.exp(-dist * 0.5)) + Math.random() * 0.15);
+        // Amber scale
+        const a = 0.08 + str * 0.85;
+        cell.style.background = `rgba(201,122,10,${a})`;
+        if (str > 0.55) {
+          cell.textContent = CHARS[tokens[j]] || '?';
+          cell.style.color = str > 0.75 ? 'rgba(255,255,255,0.85)' : 'rgba(0,0,0,0.5)';
+        }
+      }
+      grid.appendChild(cell);
+    }
+  }
+}
+
+// ─── LEARN SECTION ───────────────────────────────────────
+
+function switchChapter(id, btn) {
+  // Hide all panels
+  document.querySelectorAll('.chapter-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.chapter-tab').forEach(t => t.classList.remove('active'));
+  // Show selected
+  document.getElementById('chapter-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function toggleConcept(card) {
+  // Close all others in same chapter
+  const siblings = card.closest('.chapter-panel').querySelectorAll('.concept-card');
+  siblings.forEach(c => { if (c !== card) c.classList.remove('open'); });
+  card.classList.toggle('open');
+}
+
+// ─── INIT ─────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  // textarea is intentionally empty — describe your own product!
+});
+
+window.addEventListener('resize', () => {
+  if (brainOpen) drawLossCanvas();
+});
+</script>
+</body>
+</html>
