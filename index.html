@@ -2280,74 +2280,77 @@ function renderNames(names) {
   document.getElementById('selected-section').classList.add('visible');
 }
 
-// ── DOMAIN CHECKER — inline RDAP, no redirects ─────────────
-// Approach: who-dat proxy (free, CORS-open, no auth)
-// Retry is handled by re-calling the same async path on the row element directly.
-// All errors surface in console AND in the UI badge.
+// ── DOMAIN CHECKER — direct registry RDAP ───────────────────
+// Each TLD has its own authoritative RDAP server with proper CORS headers.
+// We hit them directly — no proxy, no redirects, no blocked origins.
+// 404 = available, 200 = taken, error = unknown.
 
 const TLD_CONFIG = [
-  { tld: '.com',  label: 'Commercial',   reg: 'https://www.namecheap.com/domains/registration/results/?domain=' },
-  { tld: '.io',   label: 'Tech/Startup', reg: 'https://www.namecheap.com/domains/registration/results/?domain=' },
-  { tld: '.co',   label: 'Company',      reg: 'https://www.namecheap.com/domains/registration/results/?domain=' },
-  { tld: '.app',  label: 'App',          reg: 'https://www.namecheap.com/domains/registration/results/?domain=' },
-  { tld: '.dev',  label: 'Developer',    reg: 'https://www.namecheap.com/domains/registration/results/?domain=' },
-  { tld: '.ai',   label: 'AI/Tech',      reg: 'https://www.namecheap.com/domains/registration/results/?domain=' },
-  { tld: '.net',  label: 'Network',      reg: 'https://www.namecheap.com/domains/registration/results/?domain=' },
-  { tld: '.org',  label: 'Organisation', reg: 'https://www.namecheap.com/domains/registration/results/?domain=' },
+  { tld: '.com', label: 'Commercial',   rdap: 'https://rdap.verisign.com/com/v1/domain/',  reg: 'https://www.namecheap.com/domains/registration/results/?domain=' },
+  { tld: '.net', label: 'Network',      rdap: 'https://rdap.verisign.com/net/v1/domain/',  reg: 'https://www.namecheap.com/domains/registration/results/?domain=' },
+  { tld: '.io',  label: 'Tech/Startup', rdap: 'https://rdap.nic.io/domain/',               reg: 'https://www.namecheap.com/domains/registration/results/?domain=' },
+  { tld: '.co',  label: 'Company',      rdap: 'https://rdap.nic.co/domain/',               reg: 'https://www.namecheap.com/domains/registration/results/?domain=' },
+  { tld: '.app', label: 'App',          rdap: 'https://rdap.nic.google/rdap/domain/',      reg: 'https://www.namecheap.com/domains/registration/results/?domain=' },
+  { tld: '.dev', label: 'Developer',    rdap: 'https://rdap.nic.google/rdap/domain/',      reg: 'https://www.namecheap.com/domains/registration/results/?domain=' },
+  { tld: '.ai',  label: 'AI/Tech',      rdap: 'https://rdap.nic.ai/domain/',               reg: 'https://www.namecheap.com/domains/registration/results/?domain=' },
+  { tld: '.org', label: 'Organisation', rdap: 'https://rdap.publicinterestregistry.org/rdap/domain/', reg: 'https://www.namecheap.com/domains/registration/results/?domain=' },
 ];
 
-// Single RDAP lookup — returns 'available' | 'taken' | 'unknown'
-async function rdapLookup(fullDomain) {
-  const url = `https://who-dat.as93.net/${fullDomain}`;
-  console.log(`[RDAP] Checking: ${url}`);
-  // AbortSignal.timeout() cannot be cloned across postMessage boundaries (sandbox issue)
-  // Use manual AbortController + setTimeout instead
+async function rdapLookup(fullDomain, rdapBase) {
+  const url = rdapBase + fullDomain;
+  console.log(`[RDAP] GET ${url}`);
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 8000);
+  const timer = setTimeout(() => controller.abort(), 9000);
   try {
     const res = await fetch(url, {
-      method: 'GET',
-      headers: { 'Accept': 'application/json' },
       signal: controller.signal,
+      headers: { 'Accept': 'application/rdap+json, application/json' },
     });
     clearTimeout(timer);
-    console.log(`[RDAP] ${fullDomain} → HTTP ${res.status}`);
+    console.log(`[RDAP] ${fullDomain} → ${res.status}`);
     if (res.status === 404) return 'available';
-    if (!res.ok) {
-      console.warn(`[RDAP] ${fullDomain} unexpected status ${res.status}`);
-      return 'unknown';
-    }
-    const text = await res.text();
-    console.log(`[RDAP] ${fullDomain} body:`, text.slice(0, 200));
-    if (!text || text === 'null' || text === '{}' || text.trim() === '') return 'available';
-    try {
-      const data = JSON.parse(text);
-      // Empty object or error response = available
-      if (!data || Object.keys(data).length === 0) return 'available';
-      if (data.error || data.message) {
-        // who-dat returns error message when no record found
-        const msg = (data.error || data.message || '').toLowerCase();
-        if (msg.includes('no match') || msg.includes('not found') || msg.includes('no data')) return 'available';
-        return 'unknown';
-      }
-      // Has real RDAP fields = taken
-      if (data.ldhName || data.handle || data.events || data.nameservers) return 'taken';
-    } catch (parseErr) {
-      console.error(`[RDAP] JSON parse error for ${fullDomain}:`, parseErr);
-    }
+    if (res.ok)            return 'taken';
+    // Some registries return 400 for unregistered — treat as available
+    if (res.status === 400) return 'available';
     return 'unknown';
   } catch (err) {
     clearTimeout(timer);
     if (err.name === 'AbortError') {
       console.warn(`[RDAP] ${fullDomain} timed out`);
     } else {
-      console.error(`[RDAP] ${fullDomain} fetch error:`, err.message, err);
+      console.error(`[RDAP] ${fullDomain} error:`, err.message);
+      // Fallback: try rdap.org which follows redirects to the right registry
+      return await rdapFallback(fullDomain);
     }
     return 'unknown';
   }
 }
 
-// Render result into a status cell
+// Fallback via rdap.org (follows 302 → authoritative registry, CORS allowed)
+async function rdapFallback(fullDomain) {
+  const url = `https://rdap.org/domain/${fullDomain}`;
+  console.log(`[RDAP] fallback ${url}`);
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 9000);
+  try {
+    const res = await fetch(url, {
+      redirect: 'follow',
+      signal: controller.signal,
+      headers: { 'Accept': 'application/rdap+json, application/json' },
+    });
+    clearTimeout(timer);
+    console.log(`[RDAP] fallback ${fullDomain} → ${res.status}`);
+    if (res.status === 404) return 'available';
+    if (res.ok)             return 'taken';
+    if (res.status === 400) return 'available';
+    return 'unknown';
+  } catch (err) {
+    clearTimeout(timer);
+    console.error(`[RDAP] fallback ${fullDomain} failed:`, err.message);
+    return 'unknown';
+  }
+}
+
 function renderStatus(statusEl, status, fullDomain, regBase) {
   if (status === 'available') {
     statusEl.innerHTML = `
@@ -2356,23 +2359,21 @@ function renderStatus(statusEl, status, fullDomain, regBase) {
   } else if (status === 'taken') {
     statusEl.innerHTML = `<span class="domain-badge taken">✗ Taken</span>`;
   } else {
-    // Unknown/timeout — retry button calls retryRow by row ID, no inline string escaping needed
     statusEl.innerHTML = `
-      <span class="domain-badge unknown">? Timeout</span>
+      <span class="domain-badge unknown">? Unknown</span>
       <button class="domain-register-btn" data-retry="${fullDomain}" onclick="retryRow(this)">↺ Retry</button>`;
   }
 }
 
-// Retry a single row — called from the button's onclick via data attribute
 async function retryRow(btn) {
   const fullDomain = btn.getAttribute('data-retry');
   if (!fullDomain) return;
-  const cfg = TLD_CONFIG.find(c => fullDomain.endsWith(c.tld));
+  const tld = '.' + fullDomain.split('.').pop();
+  const cfg = TLD_CONFIG.find(c => c.tld === tld);
   const statusEl = btn.closest('.domain-status');
   if (!statusEl) return;
   statusEl.innerHTML = `<span class="domain-badge checking">Checking…</span>`;
-  console.log(`[RDAP] Retrying: ${fullDomain}`);
-  const status = await rdapLookup(fullDomain);
+  const status = await rdapLookup(fullDomain, cfg ? cfg.rdap : 'https://rdap.org/domain/');
   renderStatus(statusEl, status, fullDomain, cfg ? cfg.reg : 'https://www.namecheap.com/domains/registration/results/?domain=');
 }
 
@@ -2392,9 +2393,8 @@ async function checkAllDomains(name) {
   const base = name.toLowerCase().replace(/[^a-z0-9-]/g, '');
   const tldEl = document.getElementById('domain-tlds');
   tldEl.innerHTML = '';
-  console.log(`[RDAP] Starting checks for base: "${base}"`);
+  console.log(`[RDAP] Checking base: "${base}"`);
 
-  // Render all rows in "Checking…" state immediately
   TLD_CONFIG.forEach(({ tld, label }) => {
     const full = base + tld;
     const row = document.createElement('div');
@@ -2411,10 +2411,9 @@ async function checkAllDomains(name) {
     tldEl.appendChild(row);
   });
 
-  // Fire all lookups in parallel — each resolves independently
-  TLD_CONFIG.forEach(({ tld, reg }) => {
+  TLD_CONFIG.forEach(({ tld, rdap, reg }) => {
     const full = base + tld;
-    rdapLookup(full).then(status => {
+    rdapLookup(full, rdap).then(status => {
       const row = document.getElementById('drow-' + tld.replace(/\./g, ''));
       if (!row) return;
       renderStatus(row.querySelector('.domain-status'), status, full, reg);
